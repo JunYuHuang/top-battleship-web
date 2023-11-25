@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["eslint:recommended", "prettier"],
+  extends: ["eslint:recommended", "prettier", "plugin:jest/recommended"],
   overrides: [
     {
       env: {
@@ -11,6 +11,7 @@ module.exports = {
         es2021: true,
         node: true,
         sharedNodeBrowser: true,
+        "jest/globals": true,
       },
       files: [".eslintrc.{js,cjs}"],
       parserOptions: {
@@ -22,5 +23,6 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
+  plugins: ["jest"],
   rules: {},
 };

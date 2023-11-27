@@ -6,11 +6,11 @@
   - [x] `src/folder`
   - [x] `Todos.md`
   - [x] Webpack
-  - [ ] Jest
+  - [x] Jest
   - [ ] Tailwindcss (delayable)
-  - [ ] Babel (delayable)
-  - [ ] ESLint (delayable)
-  - [ ] Prettier (delayable)
+  - [x] Babel (delayable)
+  - [x] ESLint (delayable)
+  - [x] Prettier (delayable)
 - [ ] Complete `Planning.md`
   - [ ] Summarize standard game rules
   - [ ] Write MVP requirements

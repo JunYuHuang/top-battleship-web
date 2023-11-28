@@ -11,18 +11,18 @@
   - [x] Babel (delayable)
   - [x] ESLint (delayable)
   - [x] Prettier (delayable)
-- [ ] Complete `Planning.md`
-  - [ ] Summarize standard game rules
-  - [ ] Write MVP requirements
-  - [ ] Write pseudocode
+- [x] Complete initial `Planning.md`
+  - [x] Summarize standard game rules
+  - [x] Write MVP requirements
+  - [x] Write pseudocode
 
 ## Assignment Todos
 
-- [ ] Step 1
-  - [ ] Substep 1
-  - [ ] Substep 2
-  - [ ] Substep 3
-  - [ ] Substep 4
+- [x] Step 1
+  - [x] Substep 1
+  - [x] Substep 2
+  - [x] Substep 3
+  - [x] Substep 4
 - [ ] Step 2
   - [ ] Substep 1
   - [ ] Substep 2

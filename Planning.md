@@ -86,30 +86,117 @@
 
 ## Expanded Pseudocode
 
+- `cell`: an int array of size 2 that represents a coordinate on the gameboard where
+  - `cell[0]`: an int in range \[0, 9] that represents the row index on the board
+  - `cell[1]`: an int in range \[0, 9] that represents the column index on the board
 - `Ship` class
   - fields
     - `_length`: int in range \[0, 5]
     - `_hitCount`: int in range \[0, 5]
-    - `_isSunk`: boolean
+    - `_cells`: array or set of  `_length`-sized unique `cell`'s
+  - `constructor(args)` constructor
+    - TODO
   - getter and setter methods for all individual fields
   - `hit()` method
     - return if `hitCount` >= `length`
     - `hitCount++`
   - `isSunk()` method
     - returns `_hitCount` == `_length`
+  - `onCell(cell)` method
+    - returns true if `_cell` contains `cell` else false
 - `Gameboard` class
   - fields
-    - `_board`: 10 x 10 string 2D array
-    - `_shotCells`:
-  - `canPlaceShipAt(ship, cell)`
+    - `_ROWS`: int set to 10
+    - `_COLS`: int set to 10
+    - `_MAX_SHIPS`: int set to 5
+    - `_board`: 10 x 10 string 2D array where `_board[r][c]`
+      - is `empty` for a non-occupied cell
+      - is `miss` for a non-occupied cell that had a shot called on it
+      - is `hit` for a ship-occupied cell that had a shot called on it
+      - is `ship` for a ship-occupied cell that has not had a shot called on it
+    - `_ships`: array of `Ship` instances
+    - `_visitedCells`: set of `cell`s that have been visited or (shot) called by an enemy player
+  - `constructor(args)` constructor
     - TODO
-  - `placeShipAt(ship, cell)`
+  - getter and setter methods for all individual fields
+  - `isInboundCell(cell)`
+    - `r` = `cell[0]`
+    - `c` = `cell[1]`
+    - return false if `cell` is not an array of size 2
+    - return false if `c` is not an int in the range \[0, `_COLS` - 1]
+    - return false if `r` is not an int in the range \[0, `_ROWS` - 1]
+    - return true
+  - `isEmptyCell(cell)`
+    - `r` = `cell[0]`
+    - `c` = `cell[1]`
+    - return `_board[r][c]` == `empty`
+  - `isShipCell(cell)`
+    - `r` = `cell[0]`
+    - `c` = `cell[1]`
+    - return `_board[r][c]` == `ship` or `_board[r][c]` == `hit`
+  - `isVisitedCell(cell)`
+    - return true if `cell` is in `_visitedCells` else false
+  - `areValidHorizontalShipCells(cells)`
     - TODO
+  - `areValidVerticalShipCells(cells)`
+    - TODO
+  - `indexOfShipWithCell(cell)`
+    - return if `isShipCell(cell)` returns false
+    - loop for each `ship` instance in `_ships`
+      - if `ship.onCell(cell)` returns true,
+        - return index of `ship`
+    - return -1
+  - `canPlaceShipAt(shipArgs)`
+    - return false if size of `shipArgs.cells` != `shipArgs.length`
+    - return false if there are duplicate subarray `cells` in `shipArgs.cells`
+    - loop for each `cell` in `shipArgs.cells`
+      - return false if not `isInboundCell(cell)`
+      - return false if not `isEmptyCell(cell)`
+      - TODO
+  - `placeShipAt(shipArgs)`
+    - return if `canPlaceShipAt(shipArgs)` returns false
+    - creates a new `Ship` instance `ship`
+    - pushes `ship` to `_ships` array
+    - for each ship cell
+      - update its coordinates on `_board` to `ship`
   - `receiveAttack(cell)`
-    - TODO
+    - if `isVisitedCell(cell)`, return
+    - if size of `_ships` != `_MAX_SHIPS`, return
+    - if `isShipCell(cell)`
+      - `index` = `indexOfShipWithCell(cell)`
+      - `_ships[index].hit()`
+      - update `cell` on `_board` to `hit`
+    - else
+      - update `cell` on `_board` to `miss`
+    - add `cell` to `_visitedCells`
+  - `areAllShipsSunk()`
+    - return false if size of `_ships` < `_MAX_SHIPS`
+    - `sunkShips` = 0
+    - loop for each `ship` instance in `_ships`
+      - if `ship.isSunk()`
+        - `sunkShips++`
+    - return `sunkShips` == `_MAX_SHIPS`
 - `Player` class
-  - TODO
+  - fields
+    - `_id`: int set to 1 or 2
+    - `_type`: string set to `human` or `computer`
+  - `constructor(args)` constructor
+    - TODO
+  - getter and setter methods for all individual fields
+  - `randomEmptyCell(board)`
+    - return a randomly selected `cell` that is empty on the string matrix `board`
+  - `randomShipCells(board, shipSizes)`
+    - TODO
 - `UIController` module
   - TODO
-- `Game` module?
-  - TODO?
+- `Game` module
+  - fields
+    - `_turnId`: int that represents the unique id of the `Player` instance whose turn it currently is
+    - `_players`: TODO
+    - `_boards`: TODO
+    - `_uiControllerModule`: TODO
+    - `_gameBoardClass`: TODO
+    - `_playerClass`: TODO
+  - `didPlayerWin(playerId)`
+    - TODO
+  - TODO

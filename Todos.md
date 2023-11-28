@@ -2,12 +2,12 @@
 
 ## High Level Todos
 
-- [ ] Set up project boilerplate files and code
+- [x] Set up project boilerplate files and code
   - [x] `src/folder`
   - [x] `Todos.md`
   - [x] Webpack
   - [x] Jest
-  - [ ] Tailwindcss (delayable)
+  - [x] Tailwindcss (delayable)
   - [x] Babel (delayable)
   - [x] ESLint (delayable)
   - [x] Prettier (delayable)

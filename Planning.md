@@ -58,31 +58,32 @@
 ## Pseudocode
 
 - basic game loop for phase "warship placement"
-  - exit loop if player has placed all their ships
-  - get ship subarray region placement from player
-  - if the ship placement is valid,
-    - place the ship
-    - decrement the count of to-be-placed ships for the current player
-  - else
-    - do nothing
+  - for each player
+    - while true
+      - exit loop if player has placed all their ships
+      - get ship subarray region placement from player
+      - if the ship placement is valid,
+        - place the ship on the player's board
+        - decrement the count of to-be-placed ships for the current player
 
 - basic game loop for phase "taking shots"
   - exit loop if all of a player's ships have been sunk
     - end game and display game end result
-  - get shot cell placement from current player
-  - if the shot cell placement is valid,
-    - place the shot
-    - mark the cell as visited
+  - get shot cell placement from the player whose turn it currently is
+  - if the shot cell placement is valid (is inbounds and has not been previously called by the current player),
+    - place the shot on the board of the player's enemy
+    - mark the cell as visited on the board of the player's enemy
     - if the shot was a hit,
-      - update the enemy ship's state to indicate which part of it was hit
-      - if enemy ship that was hit has no more hit points,
-        - mark the ship as sunk
-        - update the game state accordingly
+      - update the enemy's board state
+        - mark the cell that was hit
+        - update the enemy ship's state to have 1 less hit points
+      - if the enemy ship that was hit has no more hit points,
+        - mark the ship as sunk on the board of the current player's enemy
     - else
-      - mark the shot as a miss
+      - mark the shot as a miss on the board of the current player's enemy
   - else
     - keep prompting the player for a valid shot cell placement
-  - switch the current turn to the other player
+  - switch the current turn to the other (opposing) player
 
 ## Expanded Pseudocode
 

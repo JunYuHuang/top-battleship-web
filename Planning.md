@@ -23,9 +23,9 @@
   - 1 x Destroyer (of 1 x 2 cells)
 - ship placement rules
   - a ship must be placed within the 10 x 10 board
-  - a placed ship cannot be move once the "warship placement" game phase is over
+  - a placed ship cannot be moved once placed or after the "warship placement" game phase is over
   - a ship can only be placed vertically or horizontally
-  - a ship cannot be placed horizontally
+  - a ship cannot be placed diagonally in either (negative or positive) direction
   - any cell occupied by a ship cannot overlap with any cell of an existing already placed (allied) ship
   - any cell that will be occupied by a ship must be a cell that is empty and in-bounds
 - (calling) shot rules
@@ -136,25 +136,41 @@
     - return `_board[r][c]` == `ship` or `_board[r][c]` == `hit`
   - `isVisitedCell(cell)`
     - return true if `cell` is in `_visitedCells` else false
-  - `areValidHorizontalShipCells(cells)`
-    - TODO
-  - `areValidVerticalShipCells(cells)`
-    - TODO
+  - `canPlaceShipHorizontally(shipArgs, board)`
+    - return false if `shipArgs.length` is not an int >= 1
+    - return false if `shipArgs.hitCount` is not an int in the range \[0, `shipArgs.length`]
+    - return false if `shipArgs.cells` is not array of size `shipArgs.length`
+    - return false if `shipArgs.cells` contains any out-of-bounds `cell`s
+    - return false if `shipArgs.cells` contains any duplicate `cell`s
+    - return false if `shipArgs.cells` contains any cells that are not empty on the matrix board (`_board`)
+    - return false if not all of `shipArgs.cells` are in the same row
+    - return false if not all of `shipArgs.cells` form a contiguous subarray in the same row
+    - return true
+  - `canPlaceShipVertically(shipArgs, board)`
+    - return false if `shipArgs.length` is not an int >= 1
+    - return false if `shipArgs.hitCount` is not an int in the range \[0, `shipArgs.length`]
+    - return false if `shipArgs.cells` is not array of size `shipArgs.length`
+    - return false if `shipArgs.cells` contains any out-of-bounds `cell`s
+    - return false if `shipArgs.cells` contains any duplicate `cell`s
+    - return false if `shipArgs.cells` contains any cells that are not empty on the matrix board (`_board`)
+    - return false if not all of `shipArgs.cells` are in the same column
+    - return false if not all of `shipArgs.cells` form a contiguous subarray in the same column
+    - return true
   - `indexOfShipWithCell(cell)`
     - return if `isShipCell(cell)` returns false
     - loop for each `ship` instance in `_ships`
       - if `ship.onCell(cell)` returns true,
         - return index of `ship`
     - return -1
-  - `canPlaceShipAt(shipArgs)`
+  - `canPlaceShip(shipArgs)`
     - return false if size of `shipArgs.cells` != `shipArgs.length`
     - return false if there are duplicate subarray `cells` in `shipArgs.cells`
     - loop for each `cell` in `shipArgs.cells`
       - return false if not `isInboundCell(cell)`
       - return false if not `isEmptyCell(cell)`
       - TODO
-  - `placeShipAt(shipArgs)`
-    - return if `canPlaceShipAt(shipArgs)` returns false
+  - `placeShip(shipArgs)`
+    - return if `canPlaceShip(shipArgs)` returns false
     - creates a new `Ship` instance `ship`
     - pushes `ship` to `_ships` array
     - for each ship cell

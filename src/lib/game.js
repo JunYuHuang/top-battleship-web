@@ -5,10 +5,30 @@ const game = (function () {
   let _gameboardClass;
   let _playerClass;
   let _computerPlayerClass;
-  let _uiControllerModule;
+  let _isPlaying = false;
   let _players = [];
   let _boards = {};
   let _turnId = 1;
+
+  const isPlaying = function () {
+    return _isPlaying;
+  };
+
+  const setIsPlaying = function (isPlaying) {
+    _isPlaying = isPlaying;
+  };
+
+  const player = function (filters) {
+    if (_players.length < 1) return null;
+    if (filters.hasOwnProperty("id")) {
+      return _players.filter((player) => player.id === filters.id)[0];
+    }
+  };
+
+  const board = function (filters) {
+    if (Object.values(_boards).length < 1) return null;
+    return _boards[filters.id].board;
+  };
 
   const turnId = function () {
     return _turnId;
@@ -22,19 +42,11 @@ const game = (function () {
     _turnId = _turnId === 1 ? 2 : 1;
   };
 
-  const player = function (filters) {
-    if (_players.length < 1) return null;
-    if (filters.hasOwnProperty("id")) {
-      return _players.filter((player) => player.id === filters.id)[0];
-    }
-  };
-
   const setDependencies = function (args) {
     _shipClass = args.shipClass;
     _gameboardClass = args.gameboardClass;
     _playerClass = args.playerClass;
     _computerPlayerClass = args.computerPlayerClass;
-    _uiControllerModule = args.uiControllerModule;
   };
 
   const isMissingDependencies = function () {
@@ -42,10 +54,11 @@ const game = (function () {
       !_shipClass ||
       !_gameboardClass ||
       !_playerClass ||
-      !_computerPlayerClass ||
-      !_uiControllerModule
-    )
+      !_computerPlayerClass
+    ) {
+      console.error("Game module is missing dependencies!");
       return true;
+    }
     return false;
   };
 
@@ -69,6 +82,14 @@ const game = (function () {
       2: player2Gameboard,
     };
     _turnId = 1;
+    _isPlaying = true;
+  };
+
+  const wasAttacked = function (args) {
+    if (isUninitialized()) return;
+
+    const { victimId, cell } = args;
+    return _boards[victimId].isVisitedCell(cell);
   };
 
   const attack = function (args) {
@@ -88,25 +109,30 @@ const game = (function () {
   };
 
   const status = function () {
-    if (isUninitialized()) return "Game has not started yet.";
+    if (isUninitialized()) return "Game is missing prerequisites.";
+    if (!isPlaying()) return "Game is not in session.";
     if (_boards[1].areAllShipsSunk()) {
-      return `Player 1 (${player({ id: 1 }).name}) won!`;
+      return `Game ended: Player 2 (${player({ id: 2 }).name}) won!`;
     }
     if (_boards[2].areAllShipsSunk()) {
-      return `Player 2 (${player({ id: 2 }).name}) won!`;
+      return `Game ended: Player 1 (${player({ id: 1 }).name}) won!`;
     }
-    return `It is player ${_turnId} (${
+    return `It is Player ${_turnId} (${
       player({ id: _turnId }).name
     })'s turn to attack.`;
   };
 
   return {
+    isPlaying,
+    setIsPlaying,
+    player,
+    board,
     turnId,
     switchTurns,
-    player,
     setDependencies,
     initialize,
     isOver,
+    wasAttacked,
     attack,
     status,
   };

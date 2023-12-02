@@ -49,6 +49,7 @@ class ComputerPlayer extends Player {
     }
     if (validCells.length < 1) throw new Error("No available moves!");
     const randomPos = Math.floor(Math.random() * validCells.length);
+    this.#_visitedCells.add(validCells[randomPos].toString());
     return validCells[randomPos];
   }
 }

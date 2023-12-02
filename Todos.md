@@ -32,9 +32,12 @@
 - [x] Step 3
   - [x] Substep 1
   - [x] Substep 2
-- [ ] Step 4
-  - [ ] Substep 1
-  - [ ] Substep 2
+- [x] Step 4
+  - [x] Substep 1
+  - [x] Substep 2
+  - [x] Substep 3
+  - [x] Substep 4
+  - [x] Substep 5
 - [ ] Step 5
   - [ ] Substep 1
   - [ ] Substep 2

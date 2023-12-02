@@ -156,7 +156,9 @@ class Gameboard {
 
   setPresetState() {
     if (!this.#_shipClass) return;
-    const { ships, board, visitedCells } = this.presetState(this.#_shipClass);
+    const { ships, board, visitedCells } = Gameboard.presetState(
+      this.#_shipClass,
+    );
     this.#_ships = ships;
     this.#_board = board;
     this.#_visitedCells = visitedCells;

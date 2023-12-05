@@ -9,6 +9,7 @@ const game = (function () {
   let _players = [];
   let _boards = {};
   let _turnId = 1;
+  let _phase = "PREGAME";
 
   const isPlaying = function () {
     return _isPlaying;
@@ -30,6 +31,11 @@ const game = (function () {
     return _boards[filters.id].board;
   };
 
+  const gameboard = function (filters) {
+    if (Object.values(_boards).length < 1) return null;
+    return _boards[filters.id];
+  };
+
   const turnId = function () {
     return _turnId;
   };
@@ -40,6 +46,14 @@ const game = (function () {
 
   const switchTurns = function () {
     _turnId = _turnId === 1 ? 2 : 1;
+  };
+
+  const phase = function () {
+    return _phase;
+  };
+
+  const setPhase = function (value) {
+    _phase = value;
   };
 
   const setDependencies = function (args) {
@@ -74,7 +88,6 @@ const game = (function () {
     _players = [new _playerClass(), new _computerPlayerClass()];
     const gameboardArgs = { shipClass: _shipClass };
     const player1Gameboard = new _gameboardClass(gameboardArgs);
-    player1Gameboard.setPresetState();
     const player2Gameboard = new _gameboardClass(gameboardArgs);
     player2Gameboard.setPresetState();
     _boards = {
@@ -83,6 +96,7 @@ const game = (function () {
     };
     _turnId = 1;
     _isPlaying = true;
+    _phase = "PLACEMENT";
   };
 
   const wasAttacked = function (args) {
@@ -117,6 +131,10 @@ const game = (function () {
     if (_boards[2].areAllShipsSunk()) {
       return `Game ended: Player 1 (${player({ id: 1 }).name}) won!`;
     }
+    if (_phase == "PLACEMENT")
+      return `It is Player ${_turnId} (${
+        player({ id: _turnId }).name
+      })'s turn to place a ship.`;
     return `It is Player ${_turnId} (${
       player({ id: _turnId }).name
     })'s turn to attack.`;
@@ -127,8 +145,11 @@ const game = (function () {
     setIsPlaying,
     player,
     board,
+    gameboard,
     turnId,
     switchTurns,
+    phase,
+    setPhase,
     setDependencies,
     initialize,
     isOver,

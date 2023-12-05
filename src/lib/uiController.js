@@ -4,7 +4,10 @@ const uiController = (function () {
   let player1BoardRootElement;
   let player2BoardRootElement;
   let statusElement;
+  let shipOrientationSelect;
+  let shipOrientationWrapper;
   let game;
+  let shipClass;
   const cellToComponent = {
     empty: (args) => emptyCellComponent(args),
     miss: (args) => missCellComponent(args),
@@ -16,7 +19,10 @@ const uiController = (function () {
     player1BoardRootElement = args.player1BoardRootElement;
     player2BoardRootElement = args.player2BoardRootElement;
     statusElement = args.statusElement;
+    shipOrientationSelect = args.shipOrientationSelect;
+    shipOrientationWrapper = args.shipOrientationWrapper;
     game = args.game;
+    shipClass = args.shipClass;
   };
 
   const isMissingDependencies = function () {
@@ -24,7 +30,10 @@ const uiController = (function () {
       !player1BoardRootElement ||
       !player2BoardRootElement ||
       !statusElement ||
-      !game
+      !shipOrientationSelect ||
+      !shipOrientationWrapper ||
+      !game ||
+      !shipClass
     ) {
       console.error("Missing UIController dependencies!");
       return true;
@@ -110,13 +119,54 @@ const uiController = (function () {
     statusElement.textContent = status;
   };
 
-  const handleCellButton = function (e) {
+  const hideShipOrientationSelect = function () {
     if (isMissingDependencies()) return;
-    if (!game.isPlaying()) return;
+    if (shipOrientationWrapper.classList.contains("hidden")) return;
+    shipOrientationWrapper.classList.add("hidden");
+  };
 
-    const button = e.target;
-    if (button.dataset.input !== "cell-button") return;
+  const handlePlaceShip = function (button) {
+    if (game.phase() !== "PLACEMENT") return;
+    const ownerId = Number.parseInt(button.dataset.playerId);
+    if (game.turnId() !== ownerId) return;
+    const gameboard = game.gameboard({ id: ownerId });
+    if (!gameboard.canPlaceShips()) return;
+
+    const headCell = [
+      Number.parseInt(button.dataset.row),
+      Number.parseInt(button.dataset.col),
+    ];
+    const shipArgs = {
+      length: gameboard.shipSizeToPlace(),
+      hitCount: 0,
+      orientation: shipOrientationSelect.value,
+      cells: shipClass.cellsFromHeadCell(
+        headCell,
+        gameboard.shipSizeToPlace(),
+        shipOrientationSelect.value,
+      ),
+    };
+    if (gameboard.canPlaceShip(shipArgs)) {
+      gameboard.placeShip(shipArgs);
+      renderBoard({
+        board: gameboard.board,
+        playerId: game.turnId(),
+        hideShips: false,
+      });
+      if (gameboard.shipSizeToPlace() === 0) {
+        game.setPhase("ATTACK");
+        hideShipOrientationSelect();
+        renderStatus(game.status());
+      }
+    }
+  };
+
+  const handleAttack = function (button) {
+    if (game.phase() !== "ATTACK") return;
     const victimId = Number.parseInt(button.dataset.playerId);
+    const board = game.board({ id: victimId });
+    const gameboard = game.gameboard({ id: victimId });
+    if (gameboard.canPlaceShips()) return;
     if (game.turnId() === victimId) return;
 
     const attackArgs = {
@@ -180,6 +230,15 @@ const uiController = (function () {
       game.switchTurns();
       renderStatus(game.status());
     }
+  };
+
+  const handleCellButton = function (e) {
+    if (isMissingDependencies()) return;
+    if (!game.isPlaying()) return;
+    const button = e.target;
+    if (button.dataset.input !== "cell-button") return;
+    handlePlaceShip(button);
+    handleAttack(button);
   };
 
   return {

@@ -4,6 +4,7 @@ class Gameboard {
   #_ROWS = 10;
   #_COLS = 10;
   #_MAX_SHIPS = 5;
+  #_SHIP_SIZE_ORDER = [5, 4, 3, 3, 2];
 
   /*
    * String matrix that that represents each cell on the board
@@ -25,6 +26,10 @@ class Gameboard {
 
   get MAX_SHIPS() {
     return this.#_MAX_SHIPS;
+  }
+
+  get SHIP_SIZE_ORDER() {
+    return this.#_SHIP_SIZE_ORDER;
   }
 
   get shipClass() {
@@ -221,9 +226,74 @@ class Gameboard {
     return -1;
   }
 
-  // TODO
-  canPlaceShip(shipArgs, board = this.#_board) {
-    // TODO
+  canPlaceShips() {
+    return this.#_ships.length < this.#_MAX_SHIPS;
+  }
+
+  shipSizeToPlace() {
+    if (this.#_ships.length < 0) return 0;
+    if (this.#_ships.length >= this.#_MAX_SHIPS) return 0;
+    return this.#_SHIP_SIZE_ORDER[this.#_ships.length];
+  }
+
+  hasShipArgs(shipArgs) {
+    if (!Number.isInteger(shipArgs.length)) return false;
+    if (!Number.isInteger(shipArgs.hitCount)) return false;
+    if (!Array.isArray(shipArgs.cells)) return false;
+    if (typeof shipArgs.orientation !== "string") return false;
+    const { length, hitCount, cells, orientation } = shipArgs;
+    if (length < 1) return false;
+    if (hitCount < 0 || hitCount > length) return false;
+    if (orientation !== "vertical" && orientation !== "horizontal")
+      return false;
+    if (cells.length !== length) return false;
+    const visit = new Set();
+    for (const cell of cells) {
+      if (!this.isInboundCell(cell)) return false;
+      const cellStr = cell.toString();
+      if (visit.has(cellStr)) return false;
+      visit.add(cellStr);
+    }
+    return true;
+  }
+
+  isVerticalShip(shipArgs) {
+    if (shipArgs.orientation !== "vertical") return false;
+    if (shipArgs.cells.length === 1) return true;
+    const cells = shipArgs.cells.sort();
+    let prevCell = cells[0];
+    for (let i = 1; i < cells.length; i++) {
+      const [row, col] = cells[i];
+      const [prevRow, prevCol] = prevCell;
+
+      if (col !== prevCol) return false;
+      if (row !== prevRow + 1) return false;
+      prevCell = cells[i];
+    }
+    return true;
+  }
+
+  isHorizontalShip(shipArgs) {
+    if (shipArgs.orientation !== "horizontal") return false;
+    if (shipArgs.cells.length === 1) return true;
+    const cells = shipArgs.cells.sort();
+    let prevCell = cells[0];
+    for (let i = 1; i < cells.length; i++) {
+      const [row, col] = cells[i];
+      const [prevRow, prevCol] = prevCell;
+      if (row !== prevRow) return false;
+      if (col !== prevCol + 1) return false;
+      prevCell = cells[i];
+    }
+    return true;
+  }
+
+  canPlaceShip(shipArgs) {
+    if (!this.hasShipArgs(shipArgs)) return false;
+    for (const cell of shipArgs.cells) {
+      if (!this.isEmptyCell(cell)) return false;
+    }
+    return this.isVerticalShip(shipArgs) || this.isHorizontalShip(shipArgs);
   }
 
   placeShip(shipArgs, shipClass = this.#_shipClass) {

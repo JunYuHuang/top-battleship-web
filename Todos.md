@@ -39,6 +39,6 @@
   - [x] Substep 4
   - [x] Substep 5
 - [ ] Step 5
-  - [ ] Substep 1
+  - [x] Substep 1
   - [ ] Substep 2
   - [ ] Substep 3 (optional)

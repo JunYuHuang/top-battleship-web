@@ -9,13 +9,25 @@
     <main class="flex flex-col items-center min-h-screen">
       <div class="max-w-screen-md min-w-[200px]" id="app-root">
         <h1 class="text-6xl font-bold uppercase mb-4">Battleship</h1>
-        <!-- WIP Mock Template -->
         <p class="mb-6 mt-6 text-xl" id="status">😏</p>
         <h2 class="text-2xl mb-4">Your Board</h1>
         <div
           class="mb-8 border-2 border-black bg-black grid grid-cols-10 grid-rows-10 gap-0.5"
           id="player-1-board-root"
         ></div>
+        <div class="mb-8" id="ship-orientation-wrapper">
+          <label for="ship-orientation" class="">Ship Orientation:</label>
+          <br />
+          <select
+            name="ship-orientation"
+            id="ship-orientation"
+            class="border-black border-2 rounded-lg p-2"
+          >
+            <option selected value="vertical" class="">Vertical</option>
+            <option value="horizontal" class="">Horizontal</option>
+          </select>
+          <br>
+        </div>
         <h2 class="text-2xl mb-4">Enemy Board</h1>
         <div
           class="mb-8 border-2 border-black bg-black grid grid-cols-10 grid-rows-10 gap-0.5"

@@ -25,7 +25,10 @@ window.addEventListener("load", function (event) {
     player1BoardRootElement: document.querySelector("#player-1-board-root"),
     player2BoardRootElement: document.querySelector("#player-2-board-root"),
     statusElement: document.querySelector("#status"),
+    shipOrientationSelect: document.querySelector("#ship-orientation"),
+    shipOrientationWrapper: document.querySelector("#ship-orientation-wrapper"),
     game: game,
+    shipClass: Ship,
   });
 
   uiController.addEventListeners();

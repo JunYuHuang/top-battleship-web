@@ -7,7 +7,7 @@ The game can be played and is hosted live on [GitHub Pages.](https://junyuhuang.
 ## MVP Scope
 
 - Human Player vs Computer Player
-- Computer Player's board is hard-coded
+- Computer Player's board is randomly generated
 - Human Player always starts first
 
 ## Skills Demonstrated

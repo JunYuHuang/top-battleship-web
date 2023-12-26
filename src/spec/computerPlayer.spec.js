@@ -31,7 +31,7 @@ describe("ComputerPlayer class", () => {
     });
   });
 
-  describe("randomMove()", () => {
+  describe("randomAttack()", () => {
     it("throws an error if called with a board that has no empty or unvisited ship cells on a ComputerPlayer instance", () => {
       const board = missBoard();
       board[5][5] = "ship";
@@ -44,7 +44,7 @@ describe("ComputerPlayer class", () => {
       };
       const computerPlayer = new ComputerPlayer(options);
       expect(() => {
-        computerPlayer.randomMove(board);
+        computerPlayer.randomAttack(board);
       }).toThrow();
     });
 
@@ -58,7 +58,7 @@ describe("ComputerPlayer class", () => {
       };
       const computerPlayer = new ComputerPlayer(options);
       const expectedCells = new Set(["empty", "ship"]);
-      const [resRow, resCol] = computerPlayer.randomMove(board);
+      const [resRow, resCol] = computerPlayer.randomAttack(board);
       expect(expectedCells.has(board[resRow][resCol])).toStrictEqual(true);
     });
   });

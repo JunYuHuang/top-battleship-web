@@ -85,11 +85,14 @@ const game = (function () {
 
   const initialize = function () {
     if (isMissingDependencies()) return;
-    _players = [new _playerClass(), new _computerPlayerClass()];
+    _players = [
+      new _playerClass({ name: "Human" }),
+      new _computerPlayerClass(),
+    ];
     const gameboardArgs = { shipClass: _shipClass };
     const player1Gameboard = new _gameboardClass(gameboardArgs);
     const player2Gameboard = new _gameboardClass(gameboardArgs);
-    player2Gameboard.setPresetState();
+    player2Gameboard.placeShipsRandomly();
     _boards = {
       1: player1Gameboard,
       2: player2Gameboard,

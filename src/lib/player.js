@@ -7,7 +7,7 @@ class Player {
 
   constructor(options = {}) {
     this.#_name = options.hasOwnProperty("name") ? options.name : "Player";
-    this.#_id = options.hasOwnProperty("name") ? options.id : 1;
+    this.#_id = options.hasOwnProperty("id") ? options.id : 1;
     this.#_type = options.hasOwnProperty("type") ? options.type : "human";
   }
 

@@ -1,5 +1,5 @@
 "use strict";
-
+import { randomElement } from "./utils.js";
 class Gameboard {
   #_ROWS = 10;
   #_COLS = 10;
@@ -169,6 +169,21 @@ class Gameboard {
     this.#_visitedCells = visitedCells;
   }
 
+  placeShipsRandomly() {
+    if (!this.#_shipClass) return;
+    this.board = Gameboard.blankBoard();
+    this.ships = [];
+    let shipSize = this.shipSizeToPlace();
+    while (shipSize !== 0) {
+      const shipArgs = {
+        length: shipSize,
+        cells: this.randomShipCells(shipSize, this.board),
+      };
+      this.placeShip(shipArgs);
+      shipSize = this.shipSizeToPlace();
+    }
+  }
+
   isValidBoard(board = this.#_board) {
     if (!Array.isArray(board)) return false;
     if (board.length !== this.#_ROWS) return false;
@@ -194,25 +209,25 @@ class Gameboard {
     return true;
   }
 
-  isEmptyCell(cell) {
+  isEmptyCell(cell, board = this.#_board) {
     if (!this.isInboundCell(cell)) return false;
     const [row, col] = cell;
-    return this.#_board[row][col] === "empty";
+    return board[row][col] === "empty";
   }
 
-  isMissedCell(cell) {
+  isMissedCell(cell, board = this.#_board) {
     if (!this.isInboundCell(cell)) return false;
     const [row, col] = cell;
-    return this.#_board[row][col] === "miss";
+    return board[row][col] === "miss";
   }
 
-  isShipCell(cell) {
+  isShipCell(cell, board = this.#_board) {
     if (!this.isInboundCell(cell)) return false;
     const [row, col] = cell;
-    return this.#_board[row][col] === "ship";
+    return board[row][col] === "ship";
   }
 
-  isVisitedCell(cell) {
+  isVisitedCell(cell, board = this.#_board) {
     if (!this.isInboundCell(cell)) return false;
     return this.#_visitedCells.has(cell.toString());
   }
@@ -288,10 +303,10 @@ class Gameboard {
     return true;
   }
 
-  canPlaceShip(shipArgs) {
+  canPlaceShip(shipArgs, board = this.#_board) {
     if (!this.hasShipArgs(shipArgs)) return false;
     for (const cell of shipArgs.cells) {
-      if (!this.isEmptyCell(cell)) return false;
+      if (!this.isEmptyCell(cell, board)) return false;
     }
     return this.isVerticalShip(shipArgs) || this.isHorizontalShip(shipArgs);
   }
@@ -329,6 +344,51 @@ class Gameboard {
       if (ship.isSunk()) count++;
     }
     return count === this.#_ships.length;
+  }
+
+  verticalShipCells(shipSize, board) {
+    if (!Number.isInteger(shipSize) || shipSize < 1) return [];
+    const ROWS = board.length;
+    const COLS = board[0].length;
+    const choices = [];
+    for (let r = 0; r <= ROWS - shipSize; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const candidate = this.shipClass.cellsFromHeadCell(
+          [r, c],
+          shipSize,
+          "vertical",
+        );
+        if (candidate.some((cell) => !this.isEmptyCell(cell, board))) continue;
+        choices.push(candidate);
+      }
+    }
+    return choices;
+  }
+
+  horizontalShipCells(shipSize, board) {
+    if (!Number.isInteger(shipSize) || shipSize < 1) return [];
+    const ROWS = board.length;
+    const COLS = board[0].length;
+    const choices = [];
+    for (let r = 0; r <= ROWS - shipSize; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const candidate = this.shipClass.cellsFromHeadCell(
+          [r, c],
+          shipSize,
+          "horizontal",
+        );
+        if (candidate.some((cell) => !this.isEmptyCell(cell, board))) continue;
+        choices.push(candidate);
+      }
+    }
+    return choices;
+  }
+
+  randomShipCells(shipSize, board) {
+    return randomElement([
+      ...this.verticalShipCells(shipSize, board),
+      ...this.horizontalShipCells(shipSize, board),
+    ]);
   }
 }
 

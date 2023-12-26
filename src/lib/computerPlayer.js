@@ -35,7 +35,7 @@ class ComputerPlayer extends Player {
     this.#_visitedCells = values;
   }
 
-  randomMove(board) {
+  randomAttack(board) {
     const validCells = [];
     const rows = board.length;
     const cols = board[0].length;

@@ -204,10 +204,11 @@ const uiController = (function () {
       game.player({ id: game.turnId() }).type === "computer";
     if (isComputerTurn) {
       const computerPlayer = game.player({ id: game.turnId() });
+      const otherPlayer = game.player({ id: game.turnId() === 1 ? 2 : 1 });
       const attackArgs = {
-        attackerId: game.turnId(),
-        victimId: game.turnId() === 1 ? 2 : 1,
-        cell: computerPlayer.randomMove(game.board({ id: game.turnId() })),
+        attackerId: computerPlayer.id,
+        victimId: otherPlayer.id,
+        cell: computerPlayer.randomAttack(game.board({ id: otherPlayer.id })),
       };
       game.attack(attackArgs);
       renderBoard({
